@@ -5,18 +5,28 @@ class Users:
         self.name = ""
         self.userID = None
         self.__password = ""
+        self.__projectList = []
+        self.__IDs = []
     
     def set_name(self, name):
         self.name = name
+    
+    def set_userID(self, ID):
+        for i in range(len(self.__IDs)):
+            if ID == self.__IDs[i]:
+              return 0 #0 means error
+        self.userID = ID
+        return 1
 
     def set_password(self, password):
         self.__password = password
 
     def get_name(self):
         return self.name
-    
-    def generateIDs(self):
-        pass
-    
+
     def get_userID(self):
         return self.userID
+    
+    def get_projectList(self):
+       return self.__projectList
+    
