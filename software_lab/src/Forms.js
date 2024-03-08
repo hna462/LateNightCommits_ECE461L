@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Forms.css';
 
 function Form(props) {
   const [inputValue, setInputValue] = useState('');
@@ -60,8 +61,13 @@ function Form2(props) {
 const Forms = () => {
     return (
       <div>
-         <Form title="userName" /> <Form title="userID" />
-         <Form2 title="password" />
+         <div class= "fo">
+           <Form title="userName" /> 
+           <div class= "space">
+             <Form title="userID" />
+           </div>
+         </div>
+         <div class = "fo2"><Form2 title="password" /></div>
       </div>
     );
   };
