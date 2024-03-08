@@ -10,11 +10,14 @@ padding-left: 10px;
 .fo{
     display: inline-flex;
     justify-content: space-evenly;
-
+    padding-left: 100px;
 
 }
 .fo2{
     padding-left: 260px;
 
 
+}
+input{
+   max-width: 100px;
 }
