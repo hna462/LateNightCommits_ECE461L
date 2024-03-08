@@ -5,14 +5,24 @@
 // Here's an example of a simple functional component that renders a title 
 // and a message:
 // 
-
+import './MyUserClass.css'
+import { Box, Button } from '@mui/material';
 
 
 import React from 'react';
 function MyComponent(props) {
     return (
-        <div>
-            <h2>{props.title}</h2>
+        <div class = "spacer">
+            <Box color="white" component="span" 
+                bgcolor="orange" p= {2}
+                height={50}
+      width={300}
+      my={4}
+      alignItems="center"
+      gap={4}
+      >
+                  {props.title}
+                </Box>
         </div>
     );
 }
