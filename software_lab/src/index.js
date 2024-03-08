@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import MyComponent from './MyCompClass';
 import MyUser from './MyUserClass';
 import Forms from './Forms';
+import ProjectFront from './MyProjectFront';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,6 +15,7 @@ root.render(
    
    <MyUser/>
    <Forms/>
+   <ProjectFront/>
 
    </div>
   </React.StrictMode>
