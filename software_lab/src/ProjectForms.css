@@ -1,0 +1,19 @@
+div{
+    padding-top: 10px;
+}
+
+
+.space{
+    padding-top: 1px;
+padding-left: 10px;
+}
+.fo{
+    display: inline-flex;
+    justify-content: space-evenly;
+    padding-left: 100px;
+
+}
+
+input{
+   max-width: 100px;
+}
