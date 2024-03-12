@@ -17,7 +17,7 @@ function MyComponent(props) {
                         <Box color="white" 
                             bgcolor="#CC5500" p= {2}
                             height={50}
-                width={300}
+                width={430}
                 my={4}
                 display= "flex"
                 alignItems="center"
