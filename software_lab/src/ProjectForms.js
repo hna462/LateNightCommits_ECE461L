@@ -12,6 +12,7 @@ import { useState } from "react";
 //This is rendered using the <tr> and <td> elements.
 import React from 'react';
 import './ProjectForms.css';
+import { Box, Button } from '@mui/material';
 
 function Form() {
   const [inputValue, setInputValue] = useState('');
@@ -93,7 +94,17 @@ const ProjectForms = () => {
         <Table data={tableData} />
 
        </div>
- 
+       <div class = "bottom-1">
+        <Button style={{color: 'white', background: '#CC5500'}}>
+                  Checkin
+        </Button>
+       </div>
+       <div class = "bottom">
+        <Button style={{color: 'white', background: '#CC5500'}}>
+                Checkout
+        </Button>
+       </div>
+     
       </div>
      
     )
