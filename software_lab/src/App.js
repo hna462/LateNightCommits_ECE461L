@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+
 import './App.css';
 import MyUser from './MyUserClass';
 import Forms from './Forms';
@@ -30,7 +30,7 @@ function App() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/projects">Project Mgmt</Link>
+            <Link to="/resources">Resource Mgmt</Link>
           </li>
         </ul>
       </nav>
@@ -38,7 +38,7 @@ function App() {
      
         <Routes>
              <Route path="/" element={<div><MyUser/>  <Forms/>  <ProjectFront/> </div>}></Route>
-            <Route path="/projects" element={ <Project/>}></Route>
+            <Route path="/resources" element={ <Project/>}></Route>
         </Routes>
       </Router>
     </div>

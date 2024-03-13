@@ -8,8 +8,10 @@
 import './MyUserClass.css'
 import { Box, Button } from '@mui/material';
 
-
+import Forms from './Forms';
 import React from 'react';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 function MyComponent(props) {
     return (
         <div>
@@ -28,13 +30,18 @@ function MyComponent(props) {
                             </Box>
                             
                     </div>
-        <div class = "spacer2">
-            <Button style={{color: 'black', background: 'gainsboro'}}>
+         <div class = "spacer2">
+            <Popup trigger=
+                {<Button style={{color: 'black', background: 'gainsboro'}}>
                 New User?
-            </Button>
+            </Button>}
+                position="right center">
+                    Fill in user info
+                <div ><Forms /></div>
+            </Popup>
             <span class="tab2"></span>
             Sign in
-            </div>
+         </div>
         </div>
        
     );
