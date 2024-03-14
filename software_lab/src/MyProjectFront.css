@@ -25,11 +25,7 @@ hr{
     padding-left: 100px;
 
 }
-.fo2{
-    padding-left: 100px;
 
-
-}
 input{
    max-width: 100px;
 }
@@ -37,4 +33,10 @@ input{
  
     padding-left: 100px;
    
+}
+.desc{
+  padding-left: 60px;
+}
+.ID{
+    padding-left: 75px;
 }
