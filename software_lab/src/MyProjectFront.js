@@ -66,7 +66,7 @@ const ProjectFront = () => {
            <hr></hr>
           Create New Project <span class="tab"></span>
       
-          <Button style={{color: 'black', background: 'gainsboro'}}> Use Existing Project </Button>
+          Use Existing Project
         </div>
         <div class= "fo">
            <Form title="Name" /> 
@@ -75,7 +75,8 @@ const ProjectFront = () => {
            </div>
          </div>
          
-         <div class = "fo2"><Form title="Description" /><Form2 title="password" /></div>
+         <div class = "desc"><Form title="Description" /></div>
+         <div class = "ID"><Form title="projectID" /></div>
       </div>
     );
   };
