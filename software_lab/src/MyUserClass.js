@@ -115,7 +115,7 @@ function MyComponent(props) {
                 </div>
             </Popup>
             <span class="tab2"></span>
-            Sign in
+           
          </div>
         </div>
        
