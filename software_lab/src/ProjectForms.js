@@ -33,7 +33,7 @@ function Form() {
     <div>
       <form>
         <label>    
-          <input class = "in"type="text" value={inputValue} onChange={handleInputChange}/>
+          <input class = "in"type="number" min="0" value={inputValue} onChange={handleInputChange}/>
         </label>
         
       </form>
