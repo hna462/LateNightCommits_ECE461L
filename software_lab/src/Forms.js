@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './Forms.css';
 import { Box, Button } from '@mui/material';
-
 
 function Form0(props) {
   const [inputValue, setInputValue] = useState('');
@@ -103,10 +102,21 @@ function Form2(props) {
 
 
 const Forms = () => {
+ 
+
+  const handleSubmit=(event) => {
+    event.preventDefault();
+    console.log('A password was submitted: ');
+   
+  }
+  
+ 
     return (
       <div>
+
+        
          <div class= "fo">
-           <Form0 title="userName" /> 
+           <Form0  title="userName" /> 
            <div class= "space">
              <Form title="userID" />
            </div>
@@ -115,15 +125,14 @@ const Forms = () => {
          
             </div>
         <div class= "signin">
-          <Button style={{color: 'black', background: 'gainsboro'}}>
+          <Button onClick={(e) => handleSubmit(e)} type= "submit" style={{color: 'black', background: 'gainsboro'}}>
               Sign in
           </Button>
         </div>
-         
+     
       </div>
     );
   };
 export default Forms;
 
 
- 
