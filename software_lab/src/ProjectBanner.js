@@ -37,7 +37,7 @@ function MyComponent(props) {
 const Banner = () => {
     return (
       <div>
-          <MyComponent title="Resource Management" />
+          <MyComponent title="Project Management" />
       </div>
     );
   };
