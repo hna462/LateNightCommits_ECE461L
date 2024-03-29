@@ -8,7 +8,7 @@ from pymongo import MongoClient
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 import project
-import auth
+#import auth
 import resources
 
 # from flask import Flask, request, jsonify, json
