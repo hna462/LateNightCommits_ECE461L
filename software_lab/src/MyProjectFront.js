@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './MyProjectFront.css';
 import { Box, Button } from '@mui/material';
+import Popup from 'reactjs-popup';
 
 function Form(props) {
   const [inputValue, setInputValue] = useState('');
@@ -22,7 +23,7 @@ function Form(props) {
       <form>
         <label>
           {props.title}:    
-          <input type="text" value={inputValue} onChange={handleInputChange}/>
+          <input type="number" min = "0" value={inputValue} onChange={handleInputChange}/>
         </label>
         
       </form>
@@ -63,20 +64,34 @@ const ProjectFront = () => {
     return (
       <div>
         <div class = "titles">
-           <hr></hr>
-          Create New Project <span class="tab"></span>
       
           Use Existing Project
+          <span class = "tab"></span>
+          <Popup trigger=
+                {<Button style={{color: 'black', background: 'gainsboro'}}>
+                Create New Project
+            </Button>}
+                position="right center">
+                    Fill in project info
+                <div >
+                    
+                 
+                    <Form title="Name" /> 
+                  <div class= "spacerID">
+                  <Form title="Description" />
+                  </div>
+               <Form title="projectID" />
+                
+                </div>
+            </Popup>
         </div>
-        <div class= "fo">
-           <Form title="Name" /> 
-           <div class= "space">
-             <Form title="projectID" />
-           </div>
-         </div>
-         
-         <div class = "desc"><Form title="Description" /></div>
+      
          <div class = "ID"><Form title="projectID" /></div>
+         <div class= "projectSubmit">
+         <Button  type= "submit" style={{color: 'black', background: 'gainsboro'}}>
+              Submit
+          </Button>
+          </div>
       </div>
     );
   };
