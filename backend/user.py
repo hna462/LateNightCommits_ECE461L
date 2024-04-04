@@ -1,14 +1,14 @@
-# users.py
+# user.py
 # Assuming you have the encrypt function from cipher.py
 from cipher import encrypt
 
-class Users:
+class User:
 
-    def __init__(self):
-        self.name = ""
-        self.userID = None
-        self.__password = ""
-        self.__projectList = []
+    def __init__(self, name:str="", userID:int=None, password:str="", projectList:list=[]):
+        self.name = name
+        self.userID = userID
+        self.__password = password
+        self.__projectList = projectList
         self.__IDs = []
     
     def set_name(self, name:str):

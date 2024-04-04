@@ -34,13 +34,6 @@ def decrypt(inputText, N, D):
    
     return result
 
-#Task 3
-with open('database.txt') as database:
-    for data in database:
-        user_info= data.split(" ")
-        user_id = user_info[0]
-        password = user_info[1]
-        print(decrypt(user_id,3,1) , decrypt(password,3,1))
 
 # 1. asmant: Temp123 and shakrel: Life15$ are present combinations in the database.txt file
 # 2. aissa and bjha are present in the database.txt file, however, there passowrds don't match.
