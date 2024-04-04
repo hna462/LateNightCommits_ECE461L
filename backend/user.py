@@ -27,6 +27,15 @@ class User:
         
     def set_projects(self, projects:list):
         self.__projectList = projects
+        
+    def join_project(self, newProjectID:int): #returns 1 if project was joined successfully, 0 if unsucessfull
+        for projectID in self.__projectList:
+            if(newProjectID == projectID):
+                return 0 #the user is already in the project
+        self.__projectList.append(newProjectID)
+        return 1 #the project was added successfully
+            
+        
 
     def get_name(self):
         return self.name
