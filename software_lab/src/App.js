@@ -37,7 +37,7 @@ function App() {
 
      
         <Routes>
-             <Route path="/" element={<div><MyUser/>  <Forms/>  <ProjectFront/> </div>}></Route>
+             <Route path="/" element={<div><MyUser/>  <Forms/>  </div>}></Route>
             <Route path="/resources" element={ <Project/>}></Route>
         </Routes>
       </Router>
