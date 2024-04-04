@@ -23,17 +23,23 @@ class Project:
         #return 1
         
     def set_users(self, usersList:list):
-        # Encrypt the password before storing it
         self.__usersList = usersList
         
     def set_hardwareSets(self, hardwareSets:list):
         self.__hardwareSets = hardwareSets
         
-    def set_totalCapacity(self, totalCapacity):
+    def set_totalCapacity(self, totalCapacity:int):
         self.__totalCapacity = totalCapacity
     
-    def set_capacityAvailable(self, capacityAvailable):
+    def set_capacityAvailable(self, capacityAvailable:int):
         self.__capacityAvailable = capacityAvailable
+
+    def add_User(self, newUserID:int): #returns a 1 if successful or a 0 otherwise
+        for userID in self.__usersList:
+            if(newUserID == userID):
+                return 0 #the user is already in the project
+        self.__usersList.append(newUserID)
+        return 1 #the user has been successfully added
 
     def get_name(self):
         return self.name
