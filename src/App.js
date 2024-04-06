@@ -139,20 +139,21 @@ function Buttons(props){
 
 
 function Table(projectId) {
-  var currentName = "test"
-  alert("alerts are working")
+  
+  const [currentName, getValue] = useState("")
+
   const getProjects = async() =>{
       try{
         const response = await axios.post('http://localhost:5000/home/getProject', {projectId});
-        currentName(response.data.Name)
-        
+       getValue(response.data.Name)
+      
         }catch(error){
           alert("error")
         }
       }
+    getProjects()
   return (
     <div>
-      <script>getProjects();</script>
         <Box class = "table"
             sx={{ p: 2, border: '1px dashed grey' }}>
                 <div class = "info" >
