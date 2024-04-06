@@ -21,7 +21,7 @@ class UserClass:
         self.__projectList.append(projectID)
 
     def removeProjectFromUserProjectList(self, projectID):
-        self.__projectList.append(projectID)
+        self.__projectList.remove(projectID)
 
     def getProjects(self):
         return self.__projectList

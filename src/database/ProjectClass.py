@@ -1,5 +1,5 @@
 class ProjectClass:
-    def __init__(self, projectName, projectID, description, joinedList, capacity1, capacity2, availability1, availability2, ):
+    def __init__(self, projectName, projectID, description, joinedList, capacity1, capacity2, availability1, availability2):
         
         
 

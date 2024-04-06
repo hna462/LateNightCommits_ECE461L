@@ -25,7 +25,7 @@ function Login({onLoginSuccess}){
     try {
       const response = await axios.post('http://localhost:5000/login', { username, userid, password });
       setMessage(response.data.message);
-      onLoginSuccess(userid);
+      onLoginSuccess(userid, username);
       
     } catch (error) {
       if (error.response) {
@@ -41,7 +41,7 @@ function Login({onLoginSuccess}){
     try {
       const response = await axios.post('http://localhost:5000/createaccount', { enterUsername, enterUserid, enterPassword, reEnterPassword });
       setOtherMessage(response.data.otherMessage);
-      onLoginSuccess(userid);
+      onLoginSuccess(enterUserid ,enterUsername);
       
     } catch (error) {
       if (error.response) {
@@ -148,7 +148,7 @@ function Login({onLoginSuccess}){
 }
 
 
-function Home( {user, onLogOut}) {
+function Home( {userid, username,  onLogOut}) {
   
   const [projectID, setProjectID] = useState('');
   
@@ -161,8 +161,8 @@ function Home( {user, onLogOut}) {
   const [projectName, setProjectName] = useState('');
   const [projectId, setProjectId] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
-  const [n1, setN1] = useState('');
-  const [n2, setN2] = useState('');
+  const [hwSet1, setHwSet1] = useState('');
+  const [hwSet2, setHwSet2] = useState('');
 
   const[findProjectid, setFindProjectid] = useState('')
 
@@ -172,7 +172,7 @@ function Home( {user, onLogOut}) {
   const handleJoinExistingProject = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/home/joinProject', { user, projectID });
+      const response = await axios.post('http://localhost:5000/home/joinProject', { userid, projectID });
 
       setMessage(response.data.message)
 
@@ -188,7 +188,7 @@ function Home( {user, onLogOut}) {
   const handleCreateNewProject = async(e) => {
     e.preventDefault();
     try{
-      const response = await axios.post('https://localhost:5000/createProject' , {projectName, projectID, projectDescription, n1, n2})
+      const response = await axios.post('https://localhost:5000/createProject' , {projectName, projectID, projectDescription, hwSet1, hwSet2})
       setMessage(response.data.message)
     }catch (error){
       if (error.response) {
@@ -198,11 +198,11 @@ function Home( {user, onLogOut}) {
       }
     }
   }
-
+//Use a python function to get the username from userid
   return (
     
     <div>
-      <h1>Welcome to Hardware Resource Manager, {user}</h1>
+      <h1>Welcome to Hardware Resource Manager, {username}</h1> 
       <button onClick={onLogOut}>Log Out</button>
       <div>
       <h4>Create A New Project Below:</h4>
@@ -230,17 +230,17 @@ function Home( {user, onLogOut}) {
         />
       </div>
       <div>
-        <label>HWSet1 Quantity: {n1}</label>
+        <label>HWSet1 Quantity: {hwSet1}</label>
         <input
           type="number"
-          value={n1}
-          onChange={(e) => setN1(e.target.value)}
+          value={hwSet1}
+          onChange={(e) => setHwSet1(e.target.value)}
         />
-        <label>HWSet2: {n2}</label>
+        <label>HWSet2: {hwSet2}</label>
         <input
           type="number"
-          value={n2}
-          onChange={(e) => setN2(e.target.value)}
+          value={hwSet2}
+          onChange={(e) => setHwSet2(e.target.value)}
         />
       </div>
       <button onSubmit={handleCreateNewProject}>Create New Project</button>
@@ -263,20 +263,22 @@ function App() {
   
   /* Logged In Status */
   const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState('Guest');
+  const [userid, setUserid] = useState('Guest');
+  const [username, setUsername] = useState('');
   const handleLogout =() => setLoggedIn(false)
- 
-  const handleLoginSuccess = (userid) => {{
+  
+  const handleLoginSuccess = (userid, username) => {{
     setLoggedIn(true)
-    setUser(userid)
+    setUserid(userid)
+    setUsername(username)
   }}
 
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={!loggedIn ? <Login onLoginSuccess={handleLoginSuccess} /> : <Navigate replace to ="/Home" />} />
-        <Route path="/Home" element={loggedIn ? <Home userid ={user} onLogOut={handleLogout}/> : <Navigate replace to="/" />} />
+        <Route path="/" element={!loggedIn ? <Login onLoginSuccess = {handleLoginSuccess} /> : <Navigate replace to ="/Home" />} />
+        <Route path="/Home" element={loggedIn ? <Home userid ={userid} username={username} onLogOut={handleLogout}/> : <Navigate replace to="/" />} />
 
       
         
