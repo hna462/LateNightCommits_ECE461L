@@ -1,0 +1,8 @@
+user:pass
+cole:pass
+test:pass
+brad:pass
+alpha:pass
+bravo:pass
+charlie:pass
+zulu:pass
