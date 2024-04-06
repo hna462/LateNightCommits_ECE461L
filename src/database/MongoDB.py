@@ -3,13 +3,15 @@ from pymongo.server_api import ServerApi
 
 import UserClass
 import ProjectClass
+import certifi
 
-
-uri = "mongodb+srv://colejlutz:Spring2024@cluster0.7vrh2vl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = "mongodb+srv://admin:2Dumb2Live%21@cluster0.od1dgod.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+ca = certifi.where() #certificate 
+    # Set the Stable API version when creating a new client
+client = MongoClient(uri, tlsCAFile = ca)
 
 
 # Set the Stable API version when creating a new client
-client = MongoClient(uri)
 
 cipherN = 3
 cipherD = 1
@@ -62,7 +64,14 @@ def uploadNewProject(newProject: ProjectClass.ProjectClass): #uploads a Project 
 def updateUserProjects(updatedUser: UserClass.UserClass):
     filter = {"UserID": updatedUser.getUserid()}
     updateInput = {"$set":{
-        "Projects": updatedUser.getProjects()
+        "Users": updatedUser.getProjects()
+    }}
+    updateData("Data", "Users", filter, updateInput)
+
+def updateProjectUsers(updatedProject: ProjectClass.ProjectClass):
+    filter = {"ProjectID": updatedProject.get()}
+    updateInput = {"$set":{
+        "Projects": updatedProject.getUserList()
     }}
     updateData("Data", "Users", filter, updateInput)
 
@@ -89,9 +98,9 @@ def findProject(projectID:str): #returns the project data with the ID as a Proje
         projectID = projectDict["ProjectID"]
         projectUsers = projectDict["Users"]
         totalCapacity1 = projectDict["Total Capacity 1"]
-        capacityAvailable1 = projectDict["capacityAvailable 1"]
+        capacityAvailable1 = projectDict["Capacity Available 1"]
         totalCapacity2 = projectDict["Total Capacity 2"]
-        capacityAvailable2 = projectDict["capacityAvailable 2"]
+        capacityAvailable2 = projectDict["Capacity Available 2"]
         
         foundProject = ProjectClass.ProjectClass(username, description, projectID, projectUsers, totalCapacity1, capacityAvailable1, totalCapacity2, capacityAvailable2)
         return foundProject
@@ -108,7 +117,7 @@ def createNewUserAttempt(newUser: UserClass.UserClass): #attempts to make a new 
         return 1
     else:
         return 0
-
+    
 def projectIDIsFree(projectID: int):
     return (getItem("Data", "Users", "ProjectID", projectID) == None)
     
@@ -121,10 +130,15 @@ def createNewProjectAttempt(newProject: ProjectClass.ProjectClass): #attempts to
         return 0
 
 def joinProject(joiningUser: UserClass.UserClass, projectJoined: ProjectClass.ProjectClass):
-    userSuccess = joiningUser.addProjectToUserProjectList(projectJoined.getProjectID)
-    projectSuccess = projectJoined.addUserToUserList(joiningUser.getUserid)
-    if(userSuccess == 1 and projectSuccess == 1):
-        
-        return 1
-    return 0
+    joiningUser.addProjectToUserProjectList(projectJoined.getProjectID)
+    projectJoined.addUserToUserList(joiningUser.getUserid)
+    updateUserProjects(joiningUser)
+    updateProjectUsers(projectJoined)
+
+def leaveProject(leavingUser: UserClass.UserClass, projectLeft: ProjectClass.ProjectClass):
+    leavingUser.removeProjectFromUserProjectList(projectLeft.getProjectID)
+    projectLeft.removeUserFromUserList(leavingUser.getUserid)
+    updateUserProjects(leavingUser)
+    updateProjectUsers(projectLeft) 
+    
 

@@ -23,6 +23,7 @@ d_Cipher = 1
 #Routing For Login
 @app.route('/login', methods=['POST'])
 def login():
+    
     username = request.json.get('username')
     userid = request.json.get('userid')
     password = request.json.get('password')
@@ -66,7 +67,7 @@ def createaccount():
     userid = request.json.get('enterUserid')
     passwordFirst = request.json.get('enterPassword')
     passwordSecond = request.json.get('reEnterPassword')
-
+    print("test")
     if any(c in special_characters for c in username or passwordFirst or passwordSecond):
         return jsonify({"otherMessage": "Username or password contains illegal characters. Try Again.", "status": "fail"}),402
     elif passwordFirst != passwordSecond:
@@ -75,9 +76,9 @@ def createaccount():
         return jsonify({"otherMessage": "UserID already in use. Please try a different userID.", "status": "fail"}),404
     else:
         emptyProjects = []
-        usersClassList.append(UserClass(username, userid, passwordFirst, emptyProjects))
-        
-        MongoDB.uploadNewUser(UserClass(username, userid, passwordFirst, emptyProjects))
+        currentClass = UserClass(username, userid, passwordFirst, emptyProjects)
+        usersClassList.append(currentClass)
+        MongoDB.uploadNewUser(currentClass)
         return jsonify({"otherMessage": "Created New Account Successfully", "status": "success"})
     
 #Routing For Join Existing Project
@@ -90,8 +91,14 @@ def joinExistingProject():
 @app.route('/home/createProject', methods=['POST'])
 def createNewProject():
     projectName = request.json.get('projectName')
-    projectID = request.json.get('projectid')
-
+    projectID = request.json.get('projectID')
+    projectDescription = request.json.get('projectDescription')
+    hwSet1 = request.json.get('hwSet1')
+    hwSet2 = request.json.get('hwSet2')
+    
+    
+    ## currentProject = ProjectClass(projectName, projectID, projectDescription, , )
+    ##projectsClassList
         
 ##### SERVER START #####
 if __name__ == '__main__':
