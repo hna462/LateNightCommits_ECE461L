@@ -1,8 +1,181 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Box, Button } from '@mui/material';
+
+function test(totalProjects){
+  for(let i = 0; i < totalProjects.length;i++){
+     //print(totalProjects[i])
+  }
+}
+
+function Form(props) {
+  const [inputValue, setInputValue] = useState('');
+  const [value, getValue] = useState("")
 
 
+  /**
+   * Event handler for input change.
+   * Updates the input value state with the new value entered by the user.
+   * @param {object} event - The event object.
+   */
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+
+  }
+  
+  const onClick = async(e) => {
+
+    console.log("Button was clicked")
+
+    const requestOptions = {
+        method: "POST"
+    }
+
+
+
+    await fetch("/checkIn/", {
+      method: "POST",
+      headers: {"Content-Type" : "application/json"},
+      //mode: "cors",
+      body: JSON.stringify({'qty':inputValue, 'projectid': props.projectid})
+  })
+  .then(response => response.json())
+  .then(data => getValue(data.qty))
+  .then(value ? alert(value + " hardware checked in") : console.log("nothing"));
+
+
+ 
+}
+
+const onClick2 = async(e) => {
+
+console.log("Button was clicked")
+
+const requestOptions = {
+    method: "POST"
+}
+
+
+await fetch("/checkOut/", {
+method: "POST",
+headers: {"Content-Type" : "application/json"},
+//mode: "cors",
+body: JSON.stringify({'qty':inputValue, 'projectid': props.projectid})
+})
+.then(response => response.json())
+.then(data => getValue(data.qty))
+.then(value ? alert(value + " hardware checked out") : console.log("nothing"));
+}
+  return(
+    <div class= "info2">
+      <form>
+        <label>    
+
+          <input type="number" min="0" value={inputValue} onChange={handleInputChange}/>
+          <Button  onClick={onClick} style={{ color: 'black' , backgroundColor:"gainsboro"}}>
+                          Check in
+                      </Button>
+          <Button onClick={onClick2} style={{ color: 'black' , backgroundColor:"gainsboro"}}>
+                          Check out
+          </Button>                        
+     
+        
+        </label>
+
+      </form>
+      
+    </div>
+  )
+}
+
+function Buttons(props){
+  const [value, getValue] = useState("")
+  const [value2, getValue2] = useState("")
+  const onClick = async(e) => {
+
+    console.log("Button was clicked")
+
+    const requestOptions = {
+        method: "POST"
+    }
+
+
+
+    await fetch("/join/", {
+      method: "POST",
+      headers: {"Content-Type" : "application/json"},
+      //mode: "cors",
+      body: JSON.stringify({'projectid': props.projectid})
+  })
+  .then(response => response.json())
+  .then(data => getValue(data.projectid))
+  .then(data => getValue2("Leave"))
+  .then(value ? alert("Joined "+value) : console.log("nothing"));
+
+  
+ 
+    await fetch("/left/", {
+      method: "POST",
+      headers: {"Content-Type" : "application/json"},
+      //mode: "cors",
+      body: JSON.stringify({'projectid': props.projectid})
+  })
+  .then(response => response.json())
+  .then(data => getValue(data.projectid))
+  .then(data => getValue2("Join"))
+  .then(value ? alert("Left "+value) : console.log("nothing"));
+   
+    
+  
+}
+  return(
+    <Button onClick={onClick} style={{ color: 'black' , backgroundColor:"gainsboro"}}>
+    {value2 === "Join" ? "Join" : "Leave"}
+ </Button>
+  )
+}
+
+
+
+function Table(projectId) {
+  var currentName = "test"
+  alert("alerts are working")
+  const getProjects = async() =>{
+      try{
+        const response = await axios.post('http://localhost:5000/home/getProject', {projectId});
+        currentName(response.data.Name)
+        
+        }catch(error){
+          alert("error")
+        }
+      }
+  return (
+    <div>
+      <script>getProjects();</script>
+        <Box class = "table"
+            sx={{ p: 2, border: '1px dashed grey' }}>
+                <div class = "info" >
+                    <h2> {currentName}</h2>
+                    <p> list of authorized users</p>
+                    <div class = "forms" >
+                          <h3> HWSet1: 100/100</h3>
+                          <h3> HWSet2: 100/100</h3>
+                    </div>
+                    <div class = "forms" >
+                        <Form  projectid= "1"/>
+                        <Form  projectid= "1"/>
+                    </div>
+                    
+                    <div>
+                      <Buttons projectid = "1"/>
+                    </div>
+                </div>
+          
+        </Box>
+        </div>
+);
+}
 
 
 function Login({onLoginSuccess}){
@@ -255,6 +428,7 @@ function Home( {userid, username,  onLogOut}) {
         />
         <button onSubmit={handleJoinExistingProject}>Join Projectid</button>
     </div>
+    <div><Table projectId = "testid"/></div>
     </div>
   );
 }

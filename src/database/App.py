@@ -89,6 +89,24 @@ def createaccount():
 #    current = currentUser.()
 #    return jsonify({})
 
+@app.route('/home/getProject', methods =['POST'])
+def getProjectData():
+    projectId = request.json.get('projectId')
+    currentProject = MongoDB.findProject("testid")
+    
+    projectName = currentProject.getProjectName()
+    description = currentProject.getProjectDescription()
+    projectUsers = currentProject.getUserList()
+    totalCapacity1 = currentProject.getCapacity1()
+    totalCapacity2 = currentProject.getCapacity2()
+    capacityAvailable1 = currentProject.getAvailability1()
+    capacityAvailable2 = currentProject.getAvailability2()
+    
+    data = {"Name":projectName,"Description":description,
+                   "ProjectID":projectId,"Users":projectUsers,"Total Capacity 1":totalCapacity1,
+                   "Capacity Available 1":capacityAvailable1, "Total Capacity 2":totalCapacity2,
+                   "Capacity Available 2":capacityAvailable2}
+    return jsonify(data)
 
 #Routing For Join Existing Project
 @app.route('/home/joinProject', methods=['POST'])
@@ -105,10 +123,11 @@ def createNewProject():
     hwSet1 = request.json.get('hwSet1')
     hwSet2 = request.json.get('hwSet2')
     creatingUser = request.json.get('userid')
-    users = [creatingUser]
-    currentProject = ProjectClass(projectName, projectID, projectDescription, users, hwSet1, hwSet2, hwSet1, hwSet2)
-    projectsClassList.append(currentProject)
+    currentUser = MongoDB.findUser(creatingUser)
+    
+    currentProject = ProjectClass(projectName, projectID, projectDescription, [], hwSet1, hwSet2, hwSet1, hwSet2)
     MongoDB.uploadNewProject(currentProject)
+    MongoDB.joinProject(currentUser, currentProject)
     return jsonify({"otherMessage": "Created New Project Successfully", "status": "success"})
         
 ##### SERVER START #####
