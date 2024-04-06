@@ -149,10 +149,6 @@ function Login({onLoginSuccess}){
 
 
 function Home( {userid, username,  onLogOut}) {
-  
-  const [projectID, setProjectID] = useState('');
-  
-
   const[message, setMessage] = useState('');
   const[joinProjectMessage, setJoinProjectMessage] = useState('');
 
@@ -172,7 +168,7 @@ function Home( {userid, username,  onLogOut}) {
   const handleJoinExistingProject = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/home/joinProject', { userid, projectID });
+      const response = await axios.post('http://localhost:5000/home/joinProject', { userid, projectId });
 
       setMessage(response.data.message)
 
@@ -186,14 +182,18 @@ function Home( {userid, username,  onLogOut}) {
   }
 
   const handleCreateNewProject = async(e) => {
+    
     e.preventDefault();
     try{
-      const response = await axios.post('https://localhost:5000/createProject' , {projectName, projectID, projectDescription, hwSet1, hwSet2})
-      setMessage(response.data.message)
+      const response = await axios.post('http://localhost:5000/home/createProject' , {projectName, projectId, projectDescription, hwSet1, hwSet2, userid});
+      //alert("handle Create New project was called");
+      setMessage(response.data.message);
     }catch (error){
       if (error.response) {
+        alert("response present")
         setMessage(error.response.data.message);
       } else {
+        alert("response not present")
         setMessage('Login failed. Server could be broken.');
       }
     }
@@ -243,7 +243,7 @@ function Home( {userid, username,  onLogOut}) {
           onChange={(e) => setHwSet2(e.target.value)}
         />
       </div>
-      <button onSubmit={handleCreateNewProject}>Create New Project</button>
+      <button onClick={handleCreateNewProject}>Create New Project</button>
     </div>
     <div>
       <h4>Or join an existing project by entering the projectid below and pressing "Join Project"</h4>

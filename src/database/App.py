@@ -80,7 +80,16 @@ def createaccount():
         usersClassList.append(currentClass)
         MongoDB.uploadNewUser(currentClass)
         return jsonify({"otherMessage": "Created New Account Successfully", "status": "success"})
-    
+
+#@app.route('/getUser', methods=['POST'])
+#def getUser():
+#    userid = request.json.get('userid')
+#    currentUser = MongoDB.findUser(userid)
+#    currentUsername = currentUser.getUsername()
+#    current = currentUser.()
+#    return jsonify({})
+
+
 #Routing For Join Existing Project
 @app.route('/home/joinProject', methods=['POST'])
 def joinExistingProject():
@@ -91,14 +100,16 @@ def joinExistingProject():
 @app.route('/home/createProject', methods=['POST'])
 def createNewProject():
     projectName = request.json.get('projectName')
-    projectID = request.json.get('projectID')
+    projectID = request.json.get('projectId')
     projectDescription = request.json.get('projectDescription')
     hwSet1 = request.json.get('hwSet1')
     hwSet2 = request.json.get('hwSet2')
-    
-    
-    ## currentProject = ProjectClass(projectName, projectID, projectDescription, , )
-    ##projectsClassList
+    creatingUser = request.json.get('userid')
+    users = [creatingUser]
+    currentProject = ProjectClass(projectName, projectID, projectDescription, users, hwSet1, hwSet2, hwSet1, hwSet2)
+    projectsClassList.append(currentProject)
+    MongoDB.uploadNewProject(currentProject)
+    return jsonify({"otherMessage": "Created New Project Successfully", "status": "success"})
         
 ##### SERVER START #####
 if __name__ == '__main__':
