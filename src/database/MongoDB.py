@@ -56,7 +56,7 @@ def uploadNewProject(newProject: ProjectClass.ProjectClass): #uploads a Project 
     projectJson = {"Name":projectName,"Description":description,
                    "ProjectID":projectID,"Users":projectUsers,"Total Capacity 1":totalCapacity1,
                    "Capacity Available 1":capacityAvailable1, "Total Capacity 2":totalCapacity2,
-                   "Capacity Available 2":capacityAvailable2,}
+                   "Capacity Available 2":capacityAvailable2}
     
     uploadNewData("Data", "Projects", projectJson)
 
@@ -64,16 +64,16 @@ def uploadNewProject(newProject: ProjectClass.ProjectClass): #uploads a Project 
 def updateUserProjects(updatedUser: UserClass.UserClass):
     filter = {"UserID": updatedUser.getUserid()}
     updateInput = {"$set":{
-        "Users": updatedUser.getProjects()
+        "Projects": updatedUser.getProjects()
     }}
     updateData("Data", "Users", filter, updateInput)
 
 def updateProjectUsers(updatedProject: ProjectClass.ProjectClass):
-    filter = {"ProjectID": updatedProject.get()}
+    filter = {"ProjectID": updatedProject.getProjectID()}
     updateInput = {"$set":{
-        "Projects": updatedProject.getUserList()
+        "Users": updatedProject.getUserList()
     }}
-    updateData("Data", "Users", filter, updateInput)
+    updateData("Data", "Projects", filter, updateInput)
 
 
 def findUser(userID:str): #returns the str. Returns None if there is no such project
@@ -93,7 +93,7 @@ def findProject(projectID:str): #returns the project data with the ID as a Proje
     projectDict = getItem("Data", "Projects", "ProjectID", projectID)
     if(projectDict != None):
         
-        username = projectDict["Username"]
+        name = projectDict["Name"]
         description = projectDict["Description"]
         projectID = projectDict["ProjectID"]
         projectUsers = projectDict["Users"]
@@ -102,7 +102,7 @@ def findProject(projectID:str): #returns the project data with the ID as a Proje
         totalCapacity2 = projectDict["Total Capacity 2"]
         capacityAvailable2 = projectDict["Capacity Available 2"]
         
-        foundProject = ProjectClass.ProjectClass(username, description, projectID, projectUsers, totalCapacity1, capacityAvailable1, totalCapacity2, capacityAvailable2)
+        foundProject = ProjectClass.ProjectClass(name, description, projectID, projectUsers, totalCapacity1, capacityAvailable1, totalCapacity2, capacityAvailable2)
         return foundProject
     else:
         return None   
@@ -111,7 +111,7 @@ def userIDIsFree(userID: int):
     return (getItem("Data", "Users", "UserID", userID) == None)
     
 def createNewUserAttempt(newUser: UserClass.UserClass): #attempts to make a new user with the given parameters. Returns 1 if successful 0 if the projectID is already used
-    newID =  newUser.getUserid
+    newID =  newUser.getUserid()
     if(userIDIsFree(newID)):
         uploadNewUser(newUser)
         return 1
@@ -122,7 +122,7 @@ def projectIDIsFree(projectID: int):
     return (getItem("Data", "Users", "ProjectID", projectID) == None)
     
 def createNewProjectAttempt(newProject: ProjectClass.ProjectClass): #attempts to make a new project with the given parameters. Returns 1 if successful 0 if the projectID is already used
-    newID = newProject.getProjectID
+    newID = newProject.getProjectID()
     if(projectIDIsFree(newID)):
         uploadNewProject(newProject)
         return 1
@@ -130,14 +130,14 @@ def createNewProjectAttempt(newProject: ProjectClass.ProjectClass): #attempts to
         return 0
 
 def joinProject(joiningUser: UserClass.UserClass, projectJoined: ProjectClass.ProjectClass):
-    joiningUser.addProjectToUserProjectList(projectJoined.getProjectID)
-    projectJoined.addUserToUserList(joiningUser.getUserid)
+    joiningUser.addProjectToUserProjectList(projectJoined.getProjectID())
+    projectJoined.addUserToUserList(joiningUser.getUserid())
     updateUserProjects(joiningUser)
     updateProjectUsers(projectJoined)
 
 def leaveProject(leavingUser: UserClass.UserClass, projectLeft: ProjectClass.ProjectClass):
-    leavingUser.removeProjectFromUserProjectList(projectLeft.getProjectID)
-    projectLeft.removeUserFromUserList(leavingUser.getUserid)
+    leavingUser.removeProjectFromUserProjectList(projectLeft.getProjectID())
+    projectLeft.removeUserFromUserList(leavingUser.getUserid())
     updateUserProjects(leavingUser)
     updateProjectUsers(projectLeft) 
     
