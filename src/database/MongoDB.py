@@ -5,7 +5,7 @@ import UserClass
 import ProjectClass
 import certifi
 
-uri = "mongodb+srv://colejlutz:Spring2024@cluster0.7vrh2vl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = "mongodb+srv://admin:2Dumb2Live%21@cluster0.od1dgod.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 ca = certifi.where() #certificate 
     # Set the Stable API version when creating a new client
 client = MongoClient(uri, tlsCAFile = ca)
