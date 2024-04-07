@@ -3,10 +3,29 @@ import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 
-function test(totalProjects){
-  for(let i = 0; i < totalProjects.length;i++){
-     //print(totalProjects[i])
+function Test({userId}){
+  const [projects, setProjects] = useState([])
+  const getUserProjects = async() =>{
+    try{
+      const response = await axios.post('http://localhost:5000/home/getUserProjects', {userId});
+      setProjects(response.data.Projects)
+    }catch(error){
+      alert(error)
+    }
   }
+
+  useEffect(() =>{
+    getUserProjects();
+  }, [])
+  
+  let array = [];
+  var currentElement;
+  const length = projects.length
+  for(let i = 0; i < length; i++){ 
+    currentElement = <Table projectId={projects[i]}/> 
+    array.push(currentElement);
+  }
+  return (<div>{array}</div>);
 }
 
 function Form(props) {
@@ -138,44 +157,55 @@ function Buttons(props){
 
 
 
-function Table(projectId) {
+function Table({projectId}) {
   
-  const [currentName, getValue] = useState("")
+  const [currentName, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const [projectUsers, setUsers] = useState("")
+  const [totalCapacity1, setCapacity1] = useState("")
+  const [totalCapacity2, setCapacity2] = useState("")
+  const [capacityAvailable1, setCapacityAvailable1] = useState("")
+  const [capacityAvailable2, setCapacityAvailable2] = useState("")
 
-  const getProjects = async() =>{
+  const getProjectData = async() =>{
       try{
-        const response = await axios.post('http://localhost:5000/home/getProject', {projectId});
-       getValue(response.data.Name)
-      
+        const response = await axios.post('http://localhost:5000/home/getProjectData', {projectId});
+        setName(response.data.Name)
+        setDescription(response.data.Description)
+        setUsers(response.data.Users)
+        setCapacity1(response.data["Total Capacity 1"])
+        setCapacity2(response.data["Total Capacity 2"])
+        setCapacityAvailable1(response.data["Capacity Available 1"])
+        setCapacityAvailable2(response.data["Capacity Available 2"])
         }catch(error){
-          alert("error")
+          alert(error)
         }
       }
-    getProjects()
-  return (
-    <div>
-        <Box class = "table"
-            sx={{ p: 2, border: '1px dashed grey' }}>
-                <div class = "info" >
-                    <h2> {currentName}</h2>
-                    <p> list of authorized users</p>
-                    <div class = "forms" >
-                          <h3> HWSet1: 100/100</h3>
-                          <h3> HWSet2: 100/100</h3>
-                    </div>
-                    <div class = "forms" >
-                        <Form  projectid= "1"/>
-                        <Form  projectid= "1"/>
-                    </div>
-                    
-                    <div>
-                      <Buttons projectid = "1"/>
-                    </div>
-                </div>
-          
-        </Box>
-        </div>
-);
+      getProjectData()
+    return (
+      <div>
+          <Box class = "table"
+              sx={{ p: 2, border: '1px dashed grey' }}>
+                  <div class = "info" >
+                      <h2> {currentName}</h2>
+                      <p> {projectUsers}</p>
+                      <div class = "forms" >
+                            <h3> HWSet1: {capacityAvailable1}/{totalCapacity1}</h3>
+                            <h3> HWSet2: {capacityAvailable2}/{totalCapacity2}</h3>
+                      </div>
+                      <div class = "forms" >
+                          <Form  projectid= "1"/>
+                          <Form  projectid= "1"/>
+                      </div>
+                      
+                      <div>
+                        <Buttons projectid = "1"/>
+                      </div>
+                  </div>
+            
+          </Box>
+          </div>
+      );
 }
 
 
@@ -336,7 +366,9 @@ function Home( {userid, username,  onLogOut}) {
 
   const[findProjectid, setFindProjectid] = useState('')
 
+  const projects = <Test userId={userid}/> 
   
+ 
 
   
   const handleJoinExistingProject = async (e) => {
@@ -359,8 +391,9 @@ function Home( {userid, username,  onLogOut}) {
     
     e.preventDefault();
     try{
+     
       const response = await axios.post('http://localhost:5000/home/createProject' , {projectName, projectId, projectDescription, hwSet1, hwSet2, userid});
-      //alert("handle Create New project was called");
+      alert("testAlert");
       setMessage(response.data.message);
     }catch (error){
       if (error.response) {
@@ -427,9 +460,9 @@ function Home( {userid, username,  onLogOut}) {
         value ={findProjectid}
         onChange={(e) => setFindProjectid(e.target.value)}
         />
-        <button onSubmit={handleJoinExistingProject}>Join Projectid</button>
+        <button onClick={handleJoinExistingProject}>Join Projectid</button>
     </div>
-    <div><Table projectId = "testid"/></div>
+    <Test userId = {userid}/>
     </div>
   );
 }

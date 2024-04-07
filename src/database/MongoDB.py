@@ -102,7 +102,7 @@ def findProject(projectID:str): #returns the project data with the ID as a Proje
         totalCapacity2 = projectDict["Total Capacity 2"]
         capacityAvailable2 = projectDict["Capacity Available 2"]
         
-        foundProject = ProjectClass.ProjectClass(name, description, projectID, projectUsers, totalCapacity1, capacityAvailable1, totalCapacity2, capacityAvailable2)
+        foundProject = ProjectClass.ProjectClass(name, description, projectID, projectUsers, totalCapacity1, totalCapacity2, capacityAvailable1, capacityAvailable2)
         return foundProject
     else:
         return None   

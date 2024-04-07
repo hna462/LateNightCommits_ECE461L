@@ -89,10 +89,18 @@ def createaccount():
 #    current = currentUser.()
 #    return jsonify({})
 
-@app.route('/home/getProject', methods =['POST'])
+@app.route('/home/getUserProjects', methods = ['POST'])
+def getUserProjects():
+    userId = request.json.get('userId')
+    currentUser = MongoDB.findUser(userId)
+    projects = currentUser.getProjects()
+    projectsJson = {"Projects": projects}
+    return jsonify(projectsJson)
+
+@app.route('/home/getProjectData', methods =['POST'])
 def getProjectData():
     projectId = request.json.get('projectId')
-    currentProject = MongoDB.findProject("testid")
+    currentProject = MongoDB.findProject(projectId)
     
     projectName = currentProject.getProjectName()
     description = currentProject.getProjectDescription()
