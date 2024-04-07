@@ -35,17 +35,9 @@ def login():
         else:
             return jsonify({"message": "Incorrect Password. Please Try Again.", "status": "fail"}), 401
     else:
-        return jsonify({"message": "Account with that Username cannot be found", "status": "fail"}), 401
+        return jsonify({"message": "Account with that Username cannot be found", "status": "fail"}), 402
         
-    """
-    if username in userNameList and userNameList[username] == password:
-        userOnlineList.append(username)
-        return jsonify({"message": "Login successful", "status": "success"})
-    elif username in userOnlineList:
-        return jsonify({"message": "User Already Online", "status": "fail"}), 409
-    else:
-        return jsonify({"message": "Invalid credentials", "status": "fail"}), 401
-    """
+  
 
 #Routing For Logout    
 @app.route('/logout', methods=['POST'])
@@ -53,27 +45,35 @@ def logout():
     username = request.json.get('username')
     if username in userOnlineList:
         userOnlineList.remove(username)
-        return jsonify({"message": "Logout successful", "status": "success"}),3
+        return jsonify({"message": "Logout successful", "status": "success"})
     else:
-        return jsonify({"message": "Somehow User Not Online", "status": "fail"}), 410
+        return jsonify({"message": "Somehow User Not Online", "status": "fail"}), 403
     
 
     
 #Routing for Create New Account
-special_characters = "!@#$%^&*()-+?_=,<>/"
+special_characters = "!@#$%^&*()-+?_=,<>/:"
 @app.route('/createaccount', methods=['POST'])
 def createaccount():
     username = request.json.get('enterUsername')
     userid = request.json.get('enterUserid')
     passwordFirst = request.json.get('enterPassword')
     passwordSecond = request.json.get('reEnterPassword')
-    print("test")
-    if any(c in special_characters for c in username or passwordFirst or passwordSecond):
-        return jsonify({"otherMessage": "Username or password contains illegal characters. Try Again.", "status": "fail"}),402
+    print(username, userid, passwordFirst, passwordSecond)
+    if any(c in special_characters for c in username):
+        return jsonify({"otherMessage": "Username contains illegal character(s). Try Again.", "status": "fail"}),404
+    elif any(c in special_characters for c in userid):
+        return jsonify({"otherMessage": "UserID contains illegal character(s). Try Again.", "status": "fail"}),405
+    elif any(c in special_characters for c in passwordFirst):
+        return jsonify({"otherMessage": "Password contains illegal character(s). Try Again.", "status": "fail"}),406
+    elif any(c in special_characters for c in passwordSecond):
+        return jsonify({"otherMessage": "Password contains illegal character(s). Try Again.", "status": "fail"}),407
     elif passwordFirst != passwordSecond:
-        return jsonify({"otherMessage": "Password do not match. Try Again.", "status": "fail"}),403
+        return jsonify({"otherMessage": "Password do not match. Try Again.", "status": "fail"}),408
     elif None is not MongoDB.findUser(userid):
-        return jsonify({"otherMessage": "UserID already in use. Please try a different userID.", "status": "fail"}),404
+        return jsonify({"otherMessage": "UserID already in use. Please try a different userID.", "status": "fail"}),409
+    elif ( (len(username) == 0) or (len(userid) == 0) or ( len(passwordFirst) == 0) or (len(passwordSecond) == 0)):
+        return jsonify({"otherMessage": "Account creation fields cannot be blank. Try again.", "status": "fail"}),410
     else:
         emptyProjects = []
         currentClass = UserClass(username, userid, passwordFirst, emptyProjects)
@@ -81,18 +81,11 @@ def createaccount():
         MongoDB.uploadNewUser(currentClass)
         return jsonify({"otherMessage": "Created New Account Successfully", "status": "success"})
 
-#@app.route('/getUser', methods=['POST'])
-#def getUser():
-#    userid = request.json.get('userid')
-#    currentUser = MongoDB.findUser(userid)
-#    currentUsername = currentUser.getUsername()
-#    current = currentUser.()
-#    return jsonify({})
 
 @app.route('/home/getProject', methods =['POST'])
 def getProjectData():
     projectId = request.json.get('projectId')
-    currentProject = MongoDB.findProject("testid")
+    currentProject = MongoDB.findProject('projectID')
     
     projectName = currentProject.getProjectName()
     description = currentProject.getProjectDescription()
@@ -111,9 +104,31 @@ def getProjectData():
 #Routing For Join Existing Project
 @app.route('/home/joinProject', methods=['POST'])
 def joinExistingProject():
-    user = request.json.get('user')
-    projectID = request.json.get('projectid')
+    user = request.json.get('userid')
+    projectID = request.json.get('findProjectid')
+    
+    if MongoDB.findProject(projectID) is None:
+        return jsonify({"message": "Project does not exist. Please try again", "status": "fail"}), 411
+    project = MongoDB.findProject(projectID)
+    #print(project.getUserList())
+    if user in (project.getUserList()):
+        return jsonify({"message": "Successfully Re-Joined Project.","projectName": project.getProjectName(),
+                         "projectID": project.getProjectID(), "projectDescription": project.getProjectDescription(),
+                           "capacity1": project.getCapacity1(), "capacity2":project.getCapacity2(),
+                             "availability1": project.getAvailability1(), "availability2": project.getAvailability2(),
+                               "userList": project.getUserList(),   "status": "success"})
+    else:
+        dic = dict(project.getDictionary())
+        dic[user] = [0,0]
+        MongoDB.updateProjectDictionary(project, dic)
+        MongoDB.joinProject(MongoDB.findUser(user), project)
+        return jsonify({"message": "Successfully Joined Project.","projectName": project.getProjectName(),
+                         "projectID": project.getProjectID(), "projectDescription": project.getProjectDescription(),
+                           "capacity1": project.getCapacity1(), "capacity2":project.getCapacity2(),
+                             "availability1": project.getAvailability1(), "availability2": project.getAvailability2(),
+                               "userList": project.getUserList(),  "status": "success"})
 
+numberCharacters = "0123456789"
 #Routing For Create New Project
 @app.route('/home/createProject', methods=['POST'])
 def createNewProject():
@@ -124,12 +139,151 @@ def createNewProject():
     hwSet2 = request.json.get('hwSet2')
     creatingUser = request.json.get('userid')
     currentUser = MongoDB.findUser(creatingUser)
+    projectDictionary = {creatingUser: [0, 0]}
     
-    currentProject = ProjectClass(projectName, projectID, projectDescription, [], hwSet1, hwSet2, hwSet1, hwSet2)
-    MongoDB.uploadNewProject(currentProject)
-    MongoDB.joinProject(currentUser, currentProject)
-    return jsonify({"otherMessage": "Created New Project Successfully", "status": "success"})
-        
+    if (MongoDB.findProject(projectID) is not None):
+         return jsonify({"message": "ProjectID already in use", "status": "fail"}), 415
+    elif ( (len(projectName) == 0) or (len(projectID) == 0)  or (len(projectDescription) == 0) ):
+        return jsonify({"message": "Project Creation Fields cannot be blank. Please try again.", "status": "fail"}), 412
+    elif any(c in special_characters for c in projectName):
+        return jsonify({"message": "Project Field(s) contains illegal character. Please try again.", "status": "fail"}), 413
+    elif any(c in special_characters for c in projectID):
+        return jsonify({"message": "Project Field(s) contains illegal character. Please try again.", "status": "fail"}), 418
+    elif any(c in special_characters for c in projectDescription):
+        return jsonify({"message": "Project Field(s) contains illegal character. Please try again.", "status": "fail"}), 419
+    elif ((len(hwSet1) == 0)  or (len(hwSet2) == 0)) :
+         return jsonify({"message": "Hardware Set capacities must be numbers. Please try again.", "status": "fail"}), 414
+    elif ((int(hwSet1) <= 0)  or (int(hwSet2) <= 0)) :
+         return jsonify({"message": "Hardware Set capacities must be positive.", "status": "fail"}), 417
+    else:
+        project = ProjectClass(projectName, projectID, projectDescription, [], str(hwSet1), str(hwSet2), str(hwSet1), str(hwSet2), projectDictionary)
+        MongoDB.uploadNewProject(project)
+        MongoDB.joinProject(currentUser, project)
+        return jsonify({"message": "Created New Project Successfully", "projectName": project.getProjectName(),
+                         "projectID": project.getProjectID(), "projectDescription": project.getProjectDescription(),
+                           "capacity1": project.getCapacity1(), "capacity2":project.getCapacity2(),
+                             "availability1": project.getAvailability1(), "availability2": project.getAvailability2(),
+                               "userList": project.getUserList(),  "status": "success"})
+    
+#Routing For Project Refresh
+@app.route('/home/ProjectRefresh', methods = ['POST'])
+def refreshProject():
+    projectId = request.json.get('findProjectid')
+    user = request.json.get('userid')
+    project = MongoDB.findProject(projectId)
+    return jsonify({"message": "Successfully Refreshed Project", "projectName": project.getProjectName(),
+                         "projectID": project.getProjectID(), "projectDescription": project.getProjectDescription(),
+                           "capacity1": project.getCapacity1(), "capacity2":project.getCapacity2(),
+                             "availability1": project.getAvailability1(), "availability2": project.getAvailability2(),
+                               "userList": project.getUserList(),  "status": "success"})
+    
+#Routing For HWSet1 Check In
+@app.route('/home/checkinhwset1', methods = ['POST'])
+def checkInHWSet1():
+    amount = request.json.get('inputHardwareNumberOne')
+    userid = request.json.get('userid')
+    projectID = request.json.get('displayProjectId')
+    project = MongoDB.findProject(projectID)
+    spot = dict(project.getDictionary())
+    place = spot[userid]
+    number = place[0]
+    
+
+    if (int(amount) > int(number)):
+        return jsonify({"message": "You cannot check in more than you checked out.", "status": "fail"}), 420
+    elif (int(amount) <= 0):
+        return jsonify({"message": "Number must be positive.", "status": "fail"}), 421
+    elif (int(amount) <= int(number)):
+        project.checkInHardware(amount, 0, userid) # 0 means HWSet1
+        MongoDB.updateProjectDictionary(project, project.getDictionary())
+        MongoDB.updateProjectAvailability1(project, project.getAvailability1())
+        return jsonify({"message": "Successfully checked units into HWSet1", "availability": project.getAvailability1(), "status": "success"})
+    else:
+        return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
+
+    
+@app.route('/home/checkouthwset1', methods = ['POST'])
+def checkOutHWSet1():
+    amount = request.json.get('inputHardwareNumberOne')
+    userid = request.json.get('userid')
+    projectID = request.json.get('displayProjectId')
+    
+    project = (MongoDB.findProject(projectID))
+    hardware_log = dict(project.getDictionary())
+    log_info = hardware_log[userid]
+    
+    
+    
+    
+    if ( int(amount) > int(project.getAvailability1()) ):
+        return jsonify({"message": "Cannot check out more than what is available. Perhaps refresh project.", "status": "fail"}), 422
+    elif (int(amount) <= 0):
+        return jsonify({"message": "Number must be positive.", "status": "fail"}), 423
+    elif (int(amount) <= int(project.getAvailability1())):
+        project.checkOutHardware(amount, 0, userid)
+        MongoDB.updateProjectDictionary(project, project.getDictionary())
+        MongoDB.updateProjectAvailability1(project, project.getAvailability1())
+        return jsonify({"message": "Successfully checked units out of HWSet1", "availability": project.getAvailability1(), "status": "success"})
+    else:
+        return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
+    
+#Routing For HWSet2 Check In
+@app.route('/home/checkinhwset2', methods = ['POST'])
+def checkInHWSet2():
+    amount = request.json.get('inputHardwareNumberTwo')
+    userid = request.json.get('userid')
+    projectID = request.json.get('displayProjectId')
+    project = MongoDB.findProject(projectID)
+    spot = dict(project.getDictionary())
+    place = spot[userid]
+    number = place[1]
+    
+    if(amount == ""):
+      amount = 0
+    if (int(amount) > int(number)):
+        return jsonify({"message": "You cannot check in more than you checked out.", "status": "fail"}), 420
+    elif (int(amount) <= 0):
+        return jsonify({"message": "Number must be positive.", "status": "fail"}), 421
+    elif (int(amount) <= int(number)):
+        project.checkInHardware(amount, 1, userid) # 0 means HWSet1
+        MongoDB.updateProjectDictionary(project, project.getDictionary())
+        MongoDB.updateProjectAvailability2(project, project.getAvailability2())
+        return jsonify({"message": "Successfully checked units into HWSet2", "availability": project.getAvailability2(), "status": "success"})
+    else:
+        return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
+
+    
+@app.route('/home/checkouthwset2', methods = ['POST'])
+def checkOutHWSet2():
+    amount = request.json.get('inputHardwareNumberTwo')
+    userid = request.json.get('userid')
+    projectID = request.json.get('displayProjectId')
+    
+    project = (MongoDB.findProject(projectID))
+    hardware_log = dict(project.getDictionary())
+    log_info = hardware_log[userid]
+    
+    
+    if(amount == ""):
+      amount = 0
+    if (int(amount) > int(project.getAvailability2())):
+        return jsonify({"message": "Cannot check out more than what is available. Perhaps refresh project.", "status": "fail"}), 422
+    elif (int(amount) <= 0):
+        return jsonify({"message": "Number must be positive.", "status": "fail"}), 423
+    elif (int(amount) <= int(project.getAvailability2())):
+        project.checkOutHardware(amount, 1, userid)
+        MongoDB.updateProjectDictionary(project, project.getDictionary())
+        MongoDB.updateProjectAvailability2(project, project.getAvailability2())
+        return jsonify({"message": "Successfully checked units out of HWSet2", "availability": project.getAvailability2(), "status": "success"})
+    else:
+        return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
+
+@app.route('/home/getProjectIDs', methods = ['POST'])        
+def getProjectIDs():
+  userID = request.json.get('userid')
+  user = MongoDB.findUser(userID)
+  projectIDs = user.getProjects()
+  return projectIDs
 ##### SERVER START #####
 if __name__ == '__main__':
     #initialize stuff in here

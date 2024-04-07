@@ -52,11 +52,12 @@ def uploadNewProject(newProject: ProjectClass.ProjectClass): #uploads a Project 
 
     totalCapacity2 = newProject.getCapacity2()
     capacityAvailable2 = newProject.getAvailability2()
+    projectDictionary = newProject.getDictionary()
     
     projectJson = {"Name":projectName,"Description":description,
                    "ProjectID":projectID,"Users":projectUsers,"Total Capacity 1":totalCapacity1,
                    "Capacity Available 1":capacityAvailable1, "Total Capacity 2":totalCapacity2,
-                   "Capacity Available 2":capacityAvailable2}
+                   "Capacity Available 2":capacityAvailable2, "Hardware Log": projectDictionary}
     
     uploadNewData("Data", "Projects", projectJson)
 
@@ -101,8 +102,9 @@ def findProject(projectID:str): #returns the project data with the ID as a Proje
         capacityAvailable1 = projectDict["Capacity Available 1"]
         totalCapacity2 = projectDict["Total Capacity 2"]
         capacityAvailable2 = projectDict["Capacity Available 2"]
+        hardwareLog = projectDict["Hardware Log"]
         
-        foundProject = ProjectClass.ProjectClass(name, description, projectID, projectUsers, totalCapacity1, capacityAvailable1, totalCapacity2, capacityAvailable2)
+        foundProject = ProjectClass.ProjectClass(name, projectID, description, projectUsers, totalCapacity1, totalCapacity2, capacityAvailable1,  capacityAvailable2, hardwareLog)
         return foundProject
     else:
         return None   
@@ -139,6 +141,40 @@ def leaveProject(leavingUser: UserClass.UserClass, projectLeft: ProjectClass.Pro
     leavingUser.removeProjectFromUserProjectList(projectLeft.getProjectID())
     projectLeft.removeUserFromUserList(leavingUser.getUserid())
     updateUserProjects(leavingUser)
-    updateProjectUsers(projectLeft) 
-    
+    updateProjectUsers(projectLeft)
+
+def getHardwareLog(project: ProjectClass.ProjectClass):
+    return client["Data"]["Projects"][project.getProjectID()]["Hardware Log"]
+
+def getProjectAvailability1(project: ProjectClass.ProjectClass):
+    return client["Data"]["Projects"][project.getProjectID()]["Capacity Available 1"]
+
+def setProjectAvailability1(project: ProjectClass.ProjectClass, qty: int):
+    ["Data"]["Projects"][project.getProjectID()]["Capacity Available 1"] = qty
+    return
+
+def setProjectAvailability2(project: ProjectClass.ProjectClass, qty: int):
+    client["Data"]["Projects"][project.getProjectID()]["Capacity Available 2"] = qty
+    return
+
+def updateProjectDictionary(project: ProjectClass.ProjectClass, newDict: dict):
+    filter = {"ProjectID": project.getProjectID()}
+    updateInput = {"$set":{
+        "Hardware Log": newDict
+    }}
+    updateData("Data", "Projects", filter, updateInput)
+
+def updateProjectAvailability1(project: ProjectClass.ProjectClass, newAvailability):
+    filter = {"ProjectID": project.getProjectID()}
+    updateInput = {"$set":{
+        "Capacity Available 1": newAvailability
+    }}
+    updateData("Data", "Projects", filter, updateInput)
+
+def updateProjectAvailability2(project: ProjectClass.ProjectClass, newAvailability):
+    filter = {"ProjectID": project.getProjectID()}
+    updateInput = {"$set":{
+        "Capacity Available 2": newAvailability
+    }}
+    updateData("Data", "Projects", filter, updateInput)  
 

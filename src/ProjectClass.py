@@ -1,13 +1,13 @@
 class ProjectClass:
-    def __init__(self, projectName, projectID, description, joinedList, capacity1, capacity2, availability1, availability2, ):
+    def __init__(self, projectName, projectID, description, joinedList, capacity1, capacity2, availability1, availability2, projectDictionary):
         
+        self.__projectDictionary = projectDictionary
         
-
         self.__projectID = projectID
         self.__projectName = projectName
         
-        self.__userList = []
-        if (joinedList != []):
+        self.__userList = ['']
+        if (joinedList != ['']):
             self.__userList = joinedList
         
         
@@ -30,7 +30,14 @@ class ProjectClass:
             self.__description = ["Enter Description Here"]
         else:
             self.__description = description
+
+    def getDictionary(self):
+        return self.__projectDictionary
+    
+    def editDictionary(self, userid, hwset, qty):
+        self.__projectDictionary[userid][hwset] = qty
         
+
     def getProjectID (self):
         return self.__projectID
     
@@ -77,35 +84,42 @@ class ProjectClass:
         return
 
 
-    def checkOutHardware(self, qty, hwSet):
-        if (hwSet == 1):
-            if qty > self.getAvailability1():
-                return False
-            else:
-                self.setAvailability1(self.getAvailability1() - qty)
-                return True
-        elif (hwSet == 2):
-            if qty > self.getAvailability2():
-                return False
-            else:
-                self.setAvailability2((self.getAvailability2() - qty))
-                return True
-
-
-    def checkInHardware(self, qty, hwSet):
-        if (hwSet == 1):
-            cap = self.getCapacity1()
-            if cap >= (self.getAvailability1() + qty):
-                return False
-            else:
-                self.setAvailability1(self.getAvailability1() + qty)
-                return True
+    def checkOutHardware(self, qty, hwSet, user):
+        if (hwSet == 0):
+            self.setAvailability1(str( int(self.getAvailability1())  - int(qty) ))
+            currentAmount = dict(self.getDictionary())[user][hwSet]
             
-        elif (hwSet == 2):
-            cap = self.getCapacity2()
-            if cap >= (self.getAvailability1() + qty):
-                return False
-            else:
-                self.setAvailability2(self.getAvailability2() + qty)
-                return True
+            self.editDictionary(user, hwSet, (int(currentAmount) + int(qty)))
+            return
+                
+        elif (hwSet == 1):
+            
+            self.setAvailability2((int(self.getAvailability2()) - int(qty)))
+            currentAmount = dict(self.getDictionary())[user][hwSet]
+            self.editDictionary(user, hwSet, (int(currentAmount) + int(qty)))
+            return
+                
+        else:
+            return None
+            
+
+
+    def checkInHardware(self, qty, hwSet, user):
+        if (hwSet == 0):
+            self.setAvailability1(str(int(self.getAvailability1()) + int(qty)))
+            currentAmount = dict(self.getDictionary())[user][hwSet]
+            self.editDictionary(user, hwSet, (int(currentAmount) - int(qty)))
+            return
+            
+            
+        elif (hwSet == 1):
+            self.setAvailability2(str ( int( (self.getAvailability2())  + int( qty )) ) )
+            currentAmount = dict(self.getDictionary())[user][hwSet]
+            self.editDictionary(user, hwSet, (int(currentAmount) - int(qty)))
+            return
+            
+        else:
+            return None
+        
+    
 
