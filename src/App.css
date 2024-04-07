@@ -7,7 +7,13 @@
   align-items: center;
   background-color:antiquewhite;
 }
-
+.userList {
+  font-style: italic;
+  color: gray;
+}
+hr.solid {
+  border-top: 3px solid #bbb;
+}
 form {
   margin: auto;
   padding: 20px;
@@ -106,6 +112,7 @@ html, body {
 .box-container {
   display: flex;
   gap: 20px; /* Adjust the space between the two boxes */
+  align-items: center;
 }
 
 .login-box {

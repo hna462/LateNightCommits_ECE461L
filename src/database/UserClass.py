@@ -27,7 +27,7 @@ class UserClass:
         return self.__projectList
     
     def setProjects(self, newProjectList):
-        self.__projectsList = newProjectList
+        self.__projectList = newProjectList
 
     
     

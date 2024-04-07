@@ -21,13 +21,13 @@ class UserClass:
         self.__projectList.append(projectID)
 
     def removeProjectFromUserProjectList(self, projectID):
-        self.__projectList.append(projectID)
+        self.__projectList.remove(projectID)
 
     def getProjects(self):
-        return self.__projects
+        return self.__projectList
     
     def setProjects(self, newProjectList):
-        self.__projects = newProjectList
+        self.__projectList = newProjectList
 
     
     
