@@ -110,10 +110,7 @@ def joinExistingProject():
     if MongoDB.findProject(projectID) is None:
         return jsonify({"message": "Project does not exist. Please try again", "status": "fail"}), 411
     project = MongoDB.findProject(projectID)
-<<<<<<< HEAD
     #print(project.getUserList())
-=======
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
     if user in (project.getUserList()):
         return jsonify({"message": "Successfully Re-Joined Project.","projectName": project.getProjectName(),
                          "projectID": project.getProjectID(), "projectDescription": project.getProjectDescription(),
@@ -143,7 +140,6 @@ def createNewProject():
     creatingUser = request.json.get('userid')
     currentUser = MongoDB.findUser(creatingUser)
     projectDictionary = {creatingUser: [0, 0]}
-<<<<<<< HEAD
     
     if (MongoDB.findProject(projectID) is not None):
          return jsonify({"message": "ProjectID already in use", "status": "fail"}), 415
@@ -218,82 +214,6 @@ def checkOutHWSet1():
     
     
     
-=======
-    
-    if (MongoDB.findProject(projectID) is not None):
-         return jsonify({"message": "ProjectID already in use", "status": "fail"}), 415
-    elif ( (len(projectName) == 0) or (len(projectID) == 0)  or (len(projectDescription) == 0) ):
-        return jsonify({"message": "Project Creation Fields cannot be blank. Please try again.", "status": "fail"}), 412
-    elif any(c in special_characters for c in projectName):
-        return jsonify({"message": "Project Field(s) contains illegal character. Please try again.", "status": "fail"}), 413
-    elif any(c in special_characters for c in projectID):
-        return jsonify({"message": "Project Field(s) contains illegal character. Please try again.", "status": "fail"}), 418
-    elif any(c in special_characters for c in projectDescription):
-        return jsonify({"message": "Project Field(s) contains illegal character. Please try again.", "status": "fail"}), 419
-    elif ((len(hwSet1) == 0)  or (len(hwSet2) == 0)) :
-         return jsonify({"message": "Hardware Set capacities must be numbers. Please try again.", "status": "fail"}), 414
-    elif ((int(hwSet1) <= 0)  or (int(hwSet2) <= 0)) :
-         return jsonify({"message": "Hardware Set capacities must be positive.", "status": "fail"}), 417
-    else:
-        project = ProjectClass(projectName, projectID, projectDescription, [], str(hwSet1), str(hwSet2), str(hwSet1), str(hwSet2), projectDictionary)
-        MongoDB.uploadNewProject(project)
-        MongoDB.joinProject(currentUser, project)
-        return jsonify({"message": "Created New Project Successfully", "projectName": project.getProjectName(),
-                         "projectID": project.getProjectID(), "projectDescription": project.getProjectDescription(),
-                           "capacity1": project.getCapacity1(), "capacity2":project.getCapacity2(),
-                             "availability1": project.getAvailability1(), "availability2": project.getAvailability2(),
-                               "userList": project.getUserList(),  "status": "success"})
-    
-#Routing For Project Refresh
-@app.route('/home/ProjectRefresh', methods = ['POST'])
-def refreshProject():
-    projectId = request.json.get('findProjectid')
-    user = request.json.get('userid')
-    project = MongoDB.findProject(projectId)
-    return jsonify({"message": "Successfully Refreshed Project", "projectName": project.getProjectName(),
-                         "projectID": project.getProjectID(), "projectDescription": project.getProjectDescription(),
-                           "capacity1": project.getCapacity1(), "capacity2":project.getCapacity2(),
-                             "availability1": project.getAvailability1(), "availability2": project.getAvailability2(),
-                               "userList": project.getUserList(),  "status": "success"})
-    
-#Routing For HWSet1 Check In
-@app.route('/home/checkinhwset1', methods = ['POST'])
-def checkInHWSet1():
-    amount = request.json.get('inputHardwareNumberOne')
-    userid = request.json.get('userid')
-    projectID = request.json.get('displayProjectId')
-    project = MongoDB.findProject(projectID)
-    spot = dict(project.getDictionary())
-    place = spot[userid]
-    number = place[0]
-    
-
-    if (int(amount) > int(number)):
-        return jsonify({"message": "You cannot check in more than you checked out.", "status": "fail"}), 420
-    elif (int(amount) <= 0):
-        return jsonify({"message": "Number must be positive.", "status": "fail"}), 421
-    elif (int(amount) <= int(number)):
-        project.checkInHardware(amount, 0, userid) # 0 means HWSet1
-        MongoDB.updateProjectDictionary(project, project.getDictionary())
-        MongoDB.updateProjectAvailability1(project, project.getAvailability1())
-        return jsonify({"message": "Successfully checked units into HWSet1", "availability": project.getAvailability1(), "status": "success"})
-    else:
-        return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
-
-    
-@app.route('/home/checkouthwset1', methods = ['POST'])
-def checkOutHWSet1():
-    amount = request.json.get('inputHardwareNumberOne')
-    userid = request.json.get('userid')
-    projectID = request.json.get('displayProjectId')
-    
-    project = (MongoDB.findProject(projectID))
-    hardware_log = dict(project.getDictionary())
-    log_info = hardware_log[userid]
-    
-    
-    
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
     
     if ( int(amount) > int(project.getAvailability1()) ):
         return jsonify({"message": "Cannot check out more than what is available. Perhaps refresh project.", "status": "fail"}), 422
@@ -318,12 +238,8 @@ def checkInHWSet2():
     place = spot[userid]
     number = place[1]
     
-<<<<<<< HEAD
     if(amount == ""):
       amount = 0
-=======
-
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
     if (int(amount) > int(number)):
         return jsonify({"message": "You cannot check in more than you checked out.", "status": "fail"}), 420
     elif (int(amount) <= 0):
@@ -331,11 +247,7 @@ def checkInHWSet2():
     elif (int(amount) <= int(number)):
         project.checkInHardware(amount, 1, userid) # 0 means HWSet1
         MongoDB.updateProjectDictionary(project, project.getDictionary())
-<<<<<<< HEAD
         MongoDB.updateProjectAvailability2(project, project.getAvailability2())
-=======
-        MongoDB.updateProjectAvailability1(project, project.getAvailability2())
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
         return jsonify({"message": "Successfully checked units into HWSet2", "availability": project.getAvailability2(), "status": "success"})
     else:
         return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
@@ -352,13 +264,8 @@ def checkOutHWSet2():
     log_info = hardware_log[userid]
     
     
-<<<<<<< HEAD
     if(amount == ""):
       amount = 0
-=======
-    
-    
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
     if (int(amount) > int(project.getAvailability2())):
         return jsonify({"message": "Cannot check out more than what is available. Perhaps refresh project.", "status": "fail"}), 422
     elif (int(amount) <= 0):
@@ -367,7 +274,6 @@ def checkOutHWSet2():
         project.checkOutHardware(amount, 1, userid)
         MongoDB.updateProjectDictionary(project, project.getDictionary())
         MongoDB.updateProjectAvailability2(project, project.getAvailability2())
-<<<<<<< HEAD
         return jsonify({"message": "Successfully checked units out of HWSet2", "availability": project.getAvailability2(), "status": "success"})
     else:
         return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
@@ -378,12 +284,6 @@ def getProjectIDs():
   user = MongoDB.findUser(userID)
   projectIDs = user.getProjects()
   return projectIDs
-=======
-        return jsonify({"message": "Successfully checked units out of HWSet1", "availability": project.getAvailability2(), "status": "success"})
-    else:
-        return jsonify({"message": "Some other error has occurred", "status": "fail"}), 424
-        
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
 ##### SERVER START #####
 if __name__ == '__main__':
     #initialize stuff in here

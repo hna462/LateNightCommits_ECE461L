@@ -173,11 +173,8 @@ function Home( {userid, username,  onLogOut}) {
   const [hwSet2, setHwSet2] = useState('');
   //Join Project Field
   const[findProjectid, setFindProjectid] = useState('');
-<<<<<<< HEAD
   //User's projectids
   const[projectIDs, setProjectIDs] = useState([]);
-=======
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
   //Display Project
   const [displayProjectName, setDisplayProjectName] = useState('No Project Joined');
   const [displayProjectId, setDisplayProjectId] = useState('no id');
@@ -208,10 +205,7 @@ function Home( {userid, username,  onLogOut}) {
       setDisplayProjectName(response.data.projectName);
       setDisplayProjectDescription(response.data.projectDescription);
       setDisplayUserList(response.data.userList);
-<<<<<<< HEAD
       // alert(displayUserList)
-=======
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
 
 
     }catch (error) {
@@ -240,10 +234,6 @@ function Home( {userid, username,  onLogOut}) {
       setDisplayProjectDescription(response.data.projectDescription);
       setDisplayUserList(response.data.userList);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
     }catch (error){
       if (error.response) {
         
@@ -281,7 +271,6 @@ function Home( {userid, username,  onLogOut}) {
       const response = await axios.post('http://localhost:5000/home/checkouthwset1', {inputHardwareNumberOne, userid, displayProjectId} )
       setHWSet1Message(response.data.message);
       setDisplayHWSet1Available(response.data.availability);
-<<<<<<< HEAD
     }catch (error){
       if (error.response) {
         
@@ -322,48 +311,6 @@ function Home( {userid, username,  onLogOut}) {
     }catch (error){
       if (error.response) {
         
-=======
-    }catch (error){
-      if (error.response) {
-        
-        setHWSet1Message(error.response.data.message);
-      } 
-      else {
-        
-        setHWSet1Message('Login failed. Server could be broken.');
-      }
-    }
-  }
-  //HW Set 2 Check In Button
-  const handleHWSet2CheckIn = async(e) => {
-    e.preventDefault();
-    try{
-      const response = await axios.post('http://localhost:5000/home/checkinhwset2', {inputHardwareNumberTwo, userid, displayProjectId} )
-      setHWSet2Message(response.data.message);
-      setDisplayHWSet2Available(response.data.availability)
-    }catch (error){
-      if (error.response) {
-        
-        setHWSet2Message(error.response.data.message);
-      } 
-      else {
-        
-        setHWSet2Message('Login failed. Server could be broken.');
-      }
-    }
-  }
-
-  //HW Set 2 Check Out Button
-  const handleHWSet2CheckOut = async(e) => {
-    e.preventDefault();
-    try{
-      const response = await axios.post('http://localhost:5000/home/checkouthwset2', {inputHardwareNumberTwo, userid, displayProjectId} )
-      setHWSet2Message(response.data.message);
-      setDisplayHWSet2Available(response.data.availability);
-    }catch (error){
-      if (error.response) {
-        
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
         setHWSet2Message(error.response.data.message);
       } 
       else {
@@ -392,7 +339,6 @@ function Home( {userid, username,  onLogOut}) {
 
     }catch (error) {
       if (error.response) {
-<<<<<<< HEAD
         setMessage(error.response.data.message);
         
       } else {
@@ -410,8 +356,6 @@ function Home( {userid, username,  onLogOut}) {
 
     }catch (error) {
       if (error.response) {
-=======
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
         setMessage(error.response.data.message);
         
       } else {
@@ -419,17 +363,12 @@ function Home( {userid, username,  onLogOut}) {
       }
     }
   }
-<<<<<<< HEAD
   //getProjectList()
   const projectIDList = []
-  projectIDs.length
+ 
    for (let i = 0; i < projectIDs.length; i++) {
      projectIDList.push(<option value={i}>{projectIDs[i]}</option>);
   }
-=======
-
-
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
   return (
     
     <div>
@@ -498,7 +437,6 @@ function Home( {userid, username,  onLogOut}) {
         <div>{joinProjectMessage}</div>
         
     </div>
-<<<<<<< HEAD
    <div>
     <br></br>
     <form>
@@ -511,25 +449,16 @@ function Home( {userid, username,  onLogOut}) {
     </form>
     </div>
      
-=======
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
     
     <div>
       <hr class="solid"></hr>
       <div className="mainBox">
       {/* Project Title Subbox */}
       <div className="subBox">
-<<<<<<< HEAD
         <div><h3>{displayProjectName}</h3> <p>Description: {displayProjectDescription}</p></div>
       </div>
       <div className="subBox">
         <p className ="userList">authorized userids: {displayUserList}</p>
-=======
-        <div><h3>{displayProjectName}</h3> <p>{displayProjectDescription}</p></div>
-      </div>
-      <div className="subBox">
-        <p className ="userList">{displayUserList}</p>
->>>>>>> 10282dc6cc45777a4f48b74dd05ea1530dd7fc47
       </div>
       <div className="subBox">
         <div><h5>HWSet1: {displayHWSet1Available}/{displayHWSet1Capacity}</h5>
