@@ -113,7 +113,7 @@ class ProjectClass:
             
             
         elif (hwSet == 1):
-            self.setAvailability2(str ( int( (self.getAvailability2())  + int( qty )) ) )
+            self.setAvailability2(str ( ( int(self.getAvailability2())  + int( qty )) ) )
             currentAmount = dict(self.getDictionary())[user][hwSet]
             self.editDictionary(user, hwSet, (int(currentAmount) - int(qty)))
             return

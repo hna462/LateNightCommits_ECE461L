@@ -335,7 +335,7 @@ function Home( {userid, username,  onLogOut}) {
       setDisplayProjectName(response.data.projectName);
       setDisplayProjectDescription(response.data.projectDescription);
       setDisplayUserList(response.data.userList);
-
+      
 
     }catch (error) {
       if (error.response) {
